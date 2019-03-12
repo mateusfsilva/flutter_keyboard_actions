@@ -8,11 +8,7 @@ import 'package:flutter/material.dart';
 
 const double _kBarSize = 45.0;
 
-enum KeyboardActionsPlatform {
-  ANDROID,
-  IOS,
-  ALL
-}
+enum KeyboardActionsPlatform { ANDROID, IOS, ALL }
 
 class KeyboardAction {
   ///This is the Focus object to know if the textfield has or lost the focus
@@ -27,15 +23,22 @@ class KeyboardAction {
   ///false if you don't want to display a closeWidget
   final bool displayCloseWidget;
 
+  /// close widget label to show if don't pass any
+  final String closeLabel;
+
   KeyboardAction({
     @required this.focusNode,
     this.onTapAction,
     this.closeWidget,
-    this.displayCloseWidget = true
+    this.displayCloseWidget = true,
+    this.closeLabel = 'Done',
   });
 }
 
 class FormKeyboardActions extends StatefulWidget {
+  /// Key used on close button
+  static const Key closeButtonKey = Key('closeButtonKey');
+
   /// You can pass any widget, ideally it should content a textfield
   final Widget child;
 
@@ -57,14 +60,15 @@ class FormKeyboardActions extends StatefulWidget {
     this.keyboardActionsPlatform = KeyboardActionsPlatform.ALL,
     this.nextFocus = true,
     this.actions,
-    this.keyboardBarColor
-  }): assert(child != null);
+    this.keyboardBarColor,
+  }) : assert(child != null);
 
   @override
   _FormKeyboardActionsState createState() => _FormKeyboardActionsState();
 }
 
-class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsBindingObserver {
+class _FormKeyboardActionsState extends State<FormKeyboardActions>
+    with WidgetsBindingObserver {
   Map<int, KeyboardAction> _map = Map();
   bool _isKeyboardVisible = false;
   KeyboardAction _currentAction;
@@ -135,11 +139,13 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsB
   }
 
   _startListeningFocus() {
-    _map.values.forEach((action) => action.focusNode.addListener(_focusNodeListener));
+    _map.values
+        .forEach((action) => action.focusNode.addListener(_focusNodeListener));
   }
 
   _dismissListeningFocus() {
-    _map.values.forEach((action) => action.focusNode.removeListener(_focusNodeListener));
+    _map.values.forEach(
+        (action) => action.focusNode.removeListener(_focusNodeListener));
   }
 
   Color _getColor() {
@@ -154,11 +160,12 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsB
     return Colors.grey[200];
   }
 
-  bool isAvailable() => widget.keyboardActionsPlatform == KeyboardActionsPlatform.ALL ||
-    (widget.keyboardActionsPlatform == KeyboardActionsPlatform.IOS &&
-      defaultTargetPlatform == TargetPlatform.iOS) ||
-    (widget.keyboardActionsPlatform == KeyboardActionsPlatform.ANDROID &&
-      defaultTargetPlatform == TargetPlatform.android);
+  bool isAvailable() =>
+      widget.keyboardActionsPlatform == KeyboardActionsPlatform.ALL ||
+      (widget.keyboardActionsPlatform == KeyboardActionsPlatform.IOS &&
+          defaultTargetPlatform == TargetPlatform.iOS) ||
+      (widget.keyboardActionsPlatform == KeyboardActionsPlatform.ANDROID &&
+          defaultTargetPlatform == TargetPlatform.android);
 
   IconData _getCUpertinoIcon(int code) {
     /// The icon font used for Cupertino icons.
@@ -167,7 +174,11 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsB
     /// The dependent package providing the Cupertino icons font.
     const String iconFontPackage = 'cupertino_icons';
 
-    return IconData(code, fontFamily: iconFont, fontPackage: iconFontPackage);
+    return IconData(
+      code,
+      fontFamily: iconFont,
+      fontPackage: iconFontPackage,
+    );
   }
 
   Widget _getPreviousButtom() {
@@ -177,19 +188,19 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsB
       if (Platform.isIOS) {
         icon = Icon(
           _getCUpertinoIcon(0xf3d8),
-          color: CupertinoColors.activeBlue
+          color: CupertinoColors.activeBlue,
         );
 
         return CupertinoButton(
           child: icon,
-          onPressed: _onTapUp
+          onPressed: _onTapUp,
         );
       } else {
         icon = const Icon(Icons.keyboard_arrow_up);
 
         return IconButton(
           icon: icon,
-          onPressed: _onTapUp
+          onPressed: _onTapUp,
         );
       }
     }
@@ -204,19 +215,19 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsB
       if (Platform.isIOS) {
         icon = Icon(
           _getCUpertinoIcon(0xf3d0),
-          color: CupertinoColors.activeBlue
+          color: CupertinoColors.activeBlue,
         );
-        
+
         return CupertinoButton(
           child: icon,
-          onPressed: _onTapDown
+          onPressed: _onTapDown,
         );
       } else {
         icon = const Icon(Icons.keyboard_arrow_down);
 
         return IconButton(
           icon: icon,
-          onPressed: _onTapDown
+          onPressed: _onTapDown,
         );
       }
     }
@@ -232,18 +243,16 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsB
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 8.0,
-        horizontal: 12.0
+        horizontal: 12.0,
       ),
       child: Text(
-        'Done',
+        _currentAction.closeLabel,
         style: TextStyle(
-          color: Platform.isIOS ?
-            CupertinoColors.activeBlue :
-            Colors.black,
+          color: Platform.isIOS ? CupertinoColors.activeBlue : Colors.black,
           fontSize: 16.0,
           fontWeight: FontWeight.w500,
-        )
-      )
+        ),
+      ),
     );
   }
 
@@ -257,13 +266,14 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsB
 
   Widget _getCloseAction() {
     if (_currentAction?.displayCloseWidget != null &&
-      _currentAction.displayCloseWidget) {
+        _currentAction.displayCloseWidget) {
       return Padding(
         padding: const EdgeInsets.all(5.0),
         child: GestureDetector(
+          key: FormKeyboardActions.closeButtonKey,
           onTap: _closeButtomTapped,
-          child: _getCloseButtom()
-        )
+          child: _getCloseButtom(),
+        ),
       );
     }
 
@@ -277,8 +287,8 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsB
         child: AnimatedCrossFade(
           duration: Duration(milliseconds: 180),
           crossFadeState: _isKeyboardVisible
-            ? CrossFadeState.showFirst
-            : CrossFadeState.showSecond,
+              ? CrossFadeState.showFirst
+              : CrossFadeState.showSecond,
           firstChild: Container(
             height: _kBarSize,
             color: _getColor(),
@@ -289,14 +299,14 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsB
                 _getNextButtom(),
                 Spacer(),
                 _getCloseAction()
-              ]
-            )
+              ],
+            ),
           ),
           secondChild: Container(
             height: 0.0,
-            width: MediaQuery.of(context).size.width
-          )
-        )
+            width: MediaQuery.of(context).size.width,
+          ),
+        ),
       );
     } else {
       return const SizedBox(height: 0.0);
@@ -352,12 +362,12 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions> with WidgetsB
       children: [
         Padding(
           padding: EdgeInsets.only(
-            bottom: _isKeyboardVisible && isAvailable() ? _kBarSize : 0.0
+            bottom: _isKeyboardVisible && isAvailable() ? _kBarSize : 0.0,
           ),
-          child: widget.child
+          child: widget.child,
         ),
         _getBar()
-      ]
+      ],
     );
   }
 }
