@@ -1,125 +1,114 @@
+import 'package:example/content.dart';
 import 'package:flutter/material.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
-void main() => runApp(MyApp());
+// Application entry-point
+void main() => runApp(MyApp()); // Toggle this to test in a dialog
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  const MyApp({Key key}) : super(key: key);
+
+  _openWidget(BuildContext context, Widget widget) =>
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => widget),
+      );
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: Scaffold(
+        backgroundColor: Colors.amber,
+        body: Builder(
+          builder: (myContext) => Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      RaisedButton(
+                        child: Text("Full Screen form"),
+                        onPressed: () => _openWidget(
+                              myContext,
+                              ScaffoldTest(),
+                            ),
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      RaisedButton(
+                        child: Text("Dialog form"),
+                        onPressed: () => _openWidget(
+                              myContext,
+                              DialogTest(),
+                            ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+        ),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  FocusNode _nodeText1 = FocusNode();
-  FocusNode _nodeText2 = FocusNode();
-  FocusNode _nodeText3 = FocusNode();
-  FocusNode _nodeText4 = FocusNode();
-  FocusNode _nodeText5 = FocusNode();
-
+/// Displays our [TextField]s in a [Scaffold] with a [FormKeyboardActions].
+class ScaffoldTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text("Keyboard Actions Sample"),
       ),
       body: FormKeyboardActions(
-        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
-        keyboardBarColor: Colors.grey[200],
-        nextFocus: true,
-        actions: [
-          KeyboardAction(
-            focusNode: _nodeText1,
-          ),
-          KeyboardAction(
-            focusNode: _nodeText2,
-            closeWidget: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.close),
-            ),
-          ),
-          KeyboardAction(
-            focusNode: _nodeText3,
-            onTapAction: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      content: Text("Custom Action"),
-                      actions: <Widget>[
-                        FlatButton(
-                          child: Text("OK"),
-                          onPressed: () => Navigator.of(context).pop(),
-                        )
-                      ],
-                    );
-                  });
-            },
-          ),
-          KeyboardAction(
-            focusNode: _nodeText4,
-            displayCloseWidget: false,
-          ),
-          KeyboardAction(
-            focusNode: _nodeText5,
-            closeWidget: Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Text("CLOSE"),
-            ),
-          ),
-        ],
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                TextField(
-                  keyboardType: TextInputType.number,
-                  focusNode: _nodeText1,
-                  decoration: InputDecoration(
-                    hintText: "Input Number",
-                  ),
-                ),
-                TextField(
-                  keyboardType: TextInputType.text,
-                  focusNode: _nodeText2,
-                  decoration: InputDecoration(
-                    hintText: "Input Text with Custom Close Widget",
-                  ),
-                ),
-                TextField(
-                  keyboardType: TextInputType.number,
-                  focusNode: _nodeText3,
-                  decoration: InputDecoration(
-                    hintText: "Input Number with Custom Action",
-                  ),
-                ),
-                TextField(
-                  keyboardType: TextInputType.text,
-                  focusNode: _nodeText4,
-                  decoration: InputDecoration(
-                    hintText: "Input Text without Close Widget",
-                  ),
-                ),
-                TextField(
-                  keyboardType: TextInputType.number,
-                  focusNode: _nodeText5,
-                  decoration: InputDecoration(
-                    hintText: "Input Number with Custom Close Widget",
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        child: Content(),
       ),
+    );
+  }
+}
+
+/// Displays our [FormKeyboardActions] nested in a [AlertDialog].
+class DialogTest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: Text("Keyboard Actions Sample"),
+        ),
+        body: Builder(builder: (context) {
+          return Center(
+            child: FlatButton(
+              color: Colors.blue,
+              child: Text('Launch dialog'),
+              onPressed: () => _launchInDialog(context),
+            ),
+          );
+        }));
+  }
+
+  _launchInDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Dialog test'),
+          content: FormKeyboardActions(autoScroll: true, child: Content()),
+          actions: [
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
