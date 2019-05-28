@@ -106,7 +106,11 @@ class DialogTest extends StatelessWidget {
           title: Text('Dialog test'),
           content: FormKeyboardActions(
             autoScroll: true,
-            child: Content(),
+            child: Container(
+              width: double.maxFinite,
+              height: double.maxFinite,
+              child: Content(),
+            ),
           ),
           actions: [
             CupertinoButton(

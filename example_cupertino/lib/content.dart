@@ -75,40 +75,67 @@ class _ContentState extends State<Content> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: SingleChildScrollView(
-          child: Container(
-            height: double.maxFinite,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                CupertinoTextField(
+        child: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 10.0,
+                ),
+                child: CupertinoTextField(
                   keyboardType: TextInputType.number,
                   focusNode: _nodeText1,
                   placeholder: "Input Number",
                 ),
-                CupertinoTextField(
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 10.0,
+                ),
+                child: CupertinoTextField(
                   keyboardType: TextInputType.text,
                   focusNode: _nodeText2,
                   placeholder: "Input Text with Custom Close Widget",
                 ),
-                CupertinoTextField(
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 10.0,
+                ),
+                child: CupertinoTextField(
                   keyboardType: TextInputType.number,
                   focusNode: _nodeText3,
                   placeholder: "Input Number with Custom Action",
                 ),
-                CupertinoTextField(
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 10.0,
+                ),
+                child: CupertinoTextField(
                   keyboardType: TextInputType.text,
                   focusNode: _nodeText4,
                   placeholder: "Input Text without Close Widget",
                 ),
-                CupertinoTextField(
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 10.0,
+                ),
+                child: CupertinoTextField(
                   keyboardType: TextInputType.number,
                   focusNode: _nodeText5,
                   placeholder: "Input Number with Custom Close Widget",
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
