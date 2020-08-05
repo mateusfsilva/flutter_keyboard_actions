@@ -1,12 +1,17 @@
 import 'dart:io' show Platform;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 const double _kBarSize = 45.0;
+
+/// The icon font used for Cupertino icons.
+const String iconFont = 'CupertinoIcons';
+
+/// The dependent package providing the Cupertino icons font.
+const String iconFontPackage = 'cupertino_icons';
 
 enum KeyboardActionsPlatform { ANDROID, IOS, ALL }
 
@@ -167,27 +172,17 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions>
       (widget.keyboardActionsPlatform == KeyboardActionsPlatform.ANDROID &&
           defaultTargetPlatform == TargetPlatform.android);
 
-  IconData _getCUpertinoIcon(int code) {
-    /// The icon font used for Cupertino icons.
-    const String iconFont = 'CupertinoIcons';
-
-    /// The dependent package providing the Cupertino icons font.
-    const String iconFontPackage = 'cupertino_icons';
-
-    return IconData(
-      code,
-      fontFamily: iconFont,
-      fontPackage: iconFontPackage,
-    );
-  }
-
   Widget _getPreviousButtom() {
     Icon icon;
 
     if (widget.nextFocus) {
       if (Platform.isIOS) {
-        icon = Icon(
-          _getCUpertinoIcon(0xf3d8),
+        icon = const Icon(
+          IconData(
+            0xf3d8,
+            fontFamily: iconFont,
+            fontPackage: iconFontPackage,
+          ),
           color: CupertinoColors.activeBlue,
         );
 
@@ -213,8 +208,12 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions>
 
     if (widget.nextFocus) {
       if (Platform.isIOS) {
-        icon = Icon(
-          _getCUpertinoIcon(0xf3d0),
+        icon = const Icon(
+          IconData(
+            0xf3d0,
+            fontFamily: iconFont,
+            fontPackage: iconFontPackage,
+          ),
           color: CupertinoColors.activeBlue,
         );
 

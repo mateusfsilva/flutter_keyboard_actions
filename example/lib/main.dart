@@ -17,11 +17,11 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  FocusNode _nodeText1 = FocusNode();
-  FocusNode _nodeText2 = FocusNode();
-  FocusNode _nodeText3 = FocusNode();
-  FocusNode _nodeText4 = FocusNode();
-  FocusNode _nodeText5 = FocusNode();
+  final FocusNode _nodeText1 = FocusNode();
+  final FocusNode _nodeText2 = FocusNode();
+  final FocusNode _nodeText3 = FocusNode();
+  final FocusNode _nodeText4 = FocusNode();
+  final FocusNode _nodeText5 = FocusNode();
 
   @override
   Widget build(BuildContext context) {
