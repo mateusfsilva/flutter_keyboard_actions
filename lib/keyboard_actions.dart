@@ -7,12 +7,6 @@ import 'package:flutter/widgets.dart';
 
 const double _kBarSize = 45.0;
 
-/// The icon font used for Cupertino icons.
-const String iconFont = 'CupertinoIcons';
-
-/// The dependent package providing the Cupertino icons font.
-const String iconFontPackage = 'cupertino_icons';
-
 enum KeyboardActionsPlatform { ANDROID, IOS, ALL }
 
 class KeyboardAction {
@@ -178,11 +172,7 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions>
     if (widget.nextFocus) {
       if (Platform.isIOS) {
         icon = const Icon(
-          IconData(
-            0xf3d8,
-            fontFamily: iconFont,
-            fontPackage: iconFontPackage,
-          ),
+          CupertinoIcons.chevron_up,
           color: CupertinoColors.activeBlue,
         );
 
@@ -209,11 +199,7 @@ class _FormKeyboardActionsState extends State<FormKeyboardActions>
     if (widget.nextFocus) {
       if (Platform.isIOS) {
         icon = const Icon(
-          IconData(
-            0xf3d0,
-            fontFamily: iconFont,
-            fontPackage: iconFontPackage,
-          ),
+          CupertinoIcons.chevron_down,
           color: CupertinoColors.activeBlue,
         );
 

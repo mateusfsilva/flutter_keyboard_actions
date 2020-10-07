@@ -4,3 +4,9 @@ example_ios/ios/Flutter/flutter_export_environment.sh
 example/ios/Flutter/flutter_export_environment.sh
 
 .packages
+
+example_ios/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+
+example_ios/ios/Flutter/.last_build_id
+
+example_ios/ios/Flutter/Flutter.podspec
