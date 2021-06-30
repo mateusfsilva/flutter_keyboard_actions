@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+
 import 'custom_input.dart';
 
 //This could be StatelessWidget but it won't work on Dialogs for now until this issue is fixed: https://github.com/flutter/flutter/issues/45839
 class Content extends StatefulWidget {
-  final bool isDialog;
-
   const Content({Key key, this.isDialog = false}) : super(key: key);
+
+  final bool isDialog;
 
   @override
   _ContentState createState() => _ContentState();
@@ -33,17 +34,17 @@ class _ContentState extends State<Content> {
 
   final FocusNode _nodeText10 = FocusNode();
 
-  final custom1Notifier = ValueNotifier<String>("0");
+  final custom1Notifier = ValueNotifier<String>('0');
 
   final custom2Notifier = ValueNotifier<Color>(Colors.blue);
 
-  final custom3Notifier = ValueNotifier<String>("");
+  final custom3Notifier = ValueNotifier<String>('');
 
   /// Creates the [KeyboardActionsConfig] to hook up the fields
   /// and their focus nodes to our [FormKeyboardActions].
   KeyboardActionsConfig _buildConfig(BuildContext context) {
     return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardActionsPlatform: KeyboardActionsPlatform.all,
       keyboardBarColor: Colors.grey[200],
       nextFocus: true,
       actions: [
@@ -68,10 +69,10 @@ class _ContentState extends State<Content> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    content: Text("Custom Action"),
+                    content: Text('Custom Action'),
                     actions: <Widget>[
                       TextButton(
-                        child: Text("OK"),
+                        child: Text('OK'),
                         onPressed: () => Navigator.of(context).pop(),
                       )
                     ],
@@ -94,7 +95,7 @@ class _ContentState extends State<Content> {
                   color: Colors.white,
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    "CLOSE",
+                    'CLOSE',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
@@ -108,7 +109,7 @@ class _ContentState extends State<Content> {
                   color: Colors.black,
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    "DONE",
+                    'DONE',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -177,48 +178,48 @@ class _ContentState extends State<Content> {
                 keyboardType: TextInputType.number,
                 focusNode: _nodeText1,
                 decoration: InputDecoration(
-                  hintText: "Input Number",
+                  hintText: 'Input Number',
                 ),
               ),
               TextField(
                 keyboardType: TextInputType.text,
                 focusNode: _nodeText2,
                 decoration: InputDecoration(
-                  hintText: "Input Text with Custom Done Widget",
+                  hintText: 'Input Text with Custom Done Widget',
                 ),
               ),
               TextField(
                 keyboardType: TextInputType.number,
                 focusNode: _nodeText3,
                 decoration: InputDecoration(
-                  hintText: "Input Number with Custom Action",
+                  hintText: 'Input Number with Custom Action',
                 ),
               ),
               TextField(
                 keyboardType: TextInputType.text,
                 focusNode: _nodeText4,
                 decoration: InputDecoration(
-                  hintText: "Input Text without Done Button",
+                  hintText: 'Input Text without Done Button',
                 ),
               ),
               TextField(
                 keyboardType: TextInputType.number,
                 focusNode: _nodeText5,
                 decoration: InputDecoration(
-                  hintText: "Input Number with Toolbar Buttons",
+                  hintText: 'Input Number with Toolbar Buttons',
                 ),
               ),
               TextField(
                 keyboardType: TextInputType.number,
                 focusNode: _nodeText6,
                 decoration: InputDecoration(
-                  hintText: "Input Number with Custom Footer",
+                  hintText: 'Input Number with Custom Footer',
                 ),
               ),
               TextField(
                 focusNode: _nodeText7,
                 decoration: InputDecoration(
-                  hintText: "Input Number with Custom Footer without Bar",
+                  hintText: 'Input Number with Custom Footer without Bar',
                 ),
               ),
               KeyboardCustomInput<String>(
@@ -256,7 +257,7 @@ class _ContentState extends State<Content> {
                   return Container(
                     alignment: Alignment.center,
                     child: Text(
-                      val.isEmpty ? "Tap Here" : val,
+                      val.isEmpty ? 'Tap Here' : val,
                       style:
                           TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
                     ),

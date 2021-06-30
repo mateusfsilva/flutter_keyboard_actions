@@ -1,5 +1,6 @@
-import 'package:example/content.dart';
 import 'package:flutter/material.dart';
+
+import 'content.dart';
 import 'sample.dart';
 import 'sample2.dart';
 
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ElevatedButton(
-                    child: Text("Full Screen form"),
+                    child: Text('Full Screen form'),
                     onPressed: () => _openWidget(
                       myContext,
                       ScaffoldTest(),
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
                     height: 25,
                   ),
                   ElevatedButton(
-                    child: Text("Dialog form"),
+                    child: Text('Dialog form'),
                     onPressed: () => _openWidget(
                       myContext,
                       DialogTest(),
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
                     height: 25,
                   ),
                   ElevatedButton(
-                    child: Text("Custom Sample 1"),
+                    child: Text('Custom Sample 1'),
                     onPressed: () => _openWidget(
                       myContext,
                       Sample(),
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
                     height: 25,
                   ),
                   ElevatedButton(
-                    child: Text("Custom Sample 2"),
+                    child: Text('Custom Sample 2'),
                     onPressed: () => _openWidget(
                       myContext,
                       Sample2(),
@@ -83,7 +84,7 @@ class ScaffoldTest extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Keyboard Actions Sample"),
+        title: Text('Keyboard Actions Sample'),
       ),
       body: Content(),
     );
@@ -96,7 +97,7 @@ class DialogTest extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Keyboard Actions Sample"),
+        title: Text('Keyboard Actions Sample'),
       ),
       body: Center(
         child: TextButton(

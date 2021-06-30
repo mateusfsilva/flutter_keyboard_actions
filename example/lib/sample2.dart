@@ -9,7 +9,7 @@ class Sample2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sample 2"),
+        title: Text('Sample 2'),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
@@ -39,7 +39,7 @@ class Sample2 extends StatelessWidget {
                   focusNode: _focusSample,
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
-                    labelText: "Sample Input",
+                    labelText: 'Sample Input',
                   ),
                 ),
               ],
@@ -52,14 +52,14 @@ class Sample2 extends StatelessWidget {
 }
 
 class MyCustomBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  final FocusNode node;
-  final TextEditingController controller;
-
   const MyCustomBarWidget({
     Key key,
     this.node,
     this.controller,
   }) : super(key: key);
+
+  final FocusNode node;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {

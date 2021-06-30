@@ -1,0 +1,17 @@
+include: package:lint/analysis_options.yaml
+
+strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
+linter:
+  rules:
+    public_member_api_docs: false
+    lines_longer_than_80_chars: true
+    prefer_single_quotes: true
+    sort_constructors_first: true
+    prefer_relative_imports: true
+    avoid_relative_lib_imports: false
+    always_put_control_body_on_new_line: true
+    use_key_in_widget_constructors: false
+    sort_pub_dependencies: false

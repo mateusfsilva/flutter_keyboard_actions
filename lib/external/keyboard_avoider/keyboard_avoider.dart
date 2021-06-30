@@ -1,15 +1,30 @@
 import 'dart:math';
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 
 import 'bottom_area_avoider.dart';
 
 /// A widget that re-sizes its [child] to avoid the system keyboard.
 ///
-/// Unlike a [Scaffold], it only insets by the actual amount obscured by the keyboard.
+/// Unlike a [Scaffold], it only insets by the actual amount obscured by the
+/// keyboard.
 ///
-/// Watches for media query changes via [didChangeMetrics], and adjusts a [BottomAreaAvoider] accordingly.
+/// Watches for media query changes via [didChangeMetrics], and adjusts a
+/// [BottomAreaAvoider] accordingly.
 class KeyboardAvoider extends StatefulWidget {
+  KeyboardAvoider({
+    Key? key,
+    required this.child,
+    this.physics,
+    this.duration = BottomAreaAvoider.defaultDuration,
+    this.curve = BottomAreaAvoider.defaultCurve,
+    this.autoScroll = BottomAreaAvoider.defaultAutoScroll,
+    this.overscroll = BottomAreaAvoider.defaultOverscroll,
+  })  : assert((child is ScrollView && child.controller != null) ||
+            child is! ScrollView),
+        super(key: key);
+
   /// See [BottomAreaAvoider.child]
   final Widget child;
 
@@ -28,17 +43,7 @@ class KeyboardAvoider extends StatefulWidget {
   /// See [BottomAreaAvoider.physics]
   final ScrollPhysics? physics;
 
-  KeyboardAvoider({
-    Key? key,
-    required this.child,
-    this.physics,
-    this.duration = BottomAreaAvoider.defaultDuration,
-    this.curve = BottomAreaAvoider.defaultCurve,
-    this.autoScroll = BottomAreaAvoider.defaultAutoScroll,
-    this.overscroll = BottomAreaAvoider.defaultOverscroll,
-  })  : assert(child is ScrollView ? child.controller != null : true),
-        super(key: key);
-
+  @override
   _KeyboardAvoiderState createState() => _KeyboardAvoiderState();
 }
 
@@ -62,13 +67,13 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider>
   @override
   Widget build(BuildContext context) {
     return BottomAreaAvoider(
-      child: widget.child,
       areaToAvoid: _keyboardOverlap,
       autoScroll: widget.autoScroll,
       curve: widget.curve,
       duration: widget.duration,
       overscroll: widget.overscroll,
       physics: widget.physics,
+      child: widget.child,
     );
   }
 
@@ -82,7 +87,8 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider>
     });
   }
 
-  /// Re-calculates the amount of overlap, based on the current [MediaQueryData.viewInsets].
+  /// Re-calculates the amount of overlap, based on the current
+  /// [MediaQueryData.viewInsets].
   void _resize() {
     if (!mounted) {
       return;
@@ -110,7 +116,8 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider>
       return;
     }
 
-    // If widget is partially obscured by the keyboard, adjust bottom padding to fully expose it
+    // If widget is partially obscured by the keyboard, adjust bottom padding
+    //to fully expose it
     final overlap = max(0.0, widgetRect.bottom - keyboardTop);
     if (overlap != _keyboardOverlap) {
       setState(() {

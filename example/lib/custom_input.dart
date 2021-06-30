@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:intl/intl.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 /// A quick example "keyboard" widget for picking a color.
 class ColorPickerKeyboard extends StatelessWidget
     with KeyboardCustomPanelMixin<Color>
     implements PreferredSizeWidget {
+  ColorPickerKeyboard({Key key, this.notifier}) : super(key: key);
+
   final ValueNotifier<Color> notifier;
   static const double _kKeyboardHeight = 200;
-
-  ColorPickerKeyboard({Key key, this.notifier}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +48,9 @@ class ColorPickerKeyboard extends StatelessWidget
 class CounterKeyboard extends StatelessWidget
     with KeyboardCustomPanelMixin<String>
     implements PreferredSizeWidget {
-  final ValueNotifier<String> notifier;
-
   CounterKeyboard({Key key, this.notifier}) : super(key: key);
+
+  final ValueNotifier<String> notifier;
 
   @override
   Size get preferredSize => Size.fromHeight(200);
@@ -70,7 +70,7 @@ class CounterKeyboard extends StatelessWidget
               },
               child: FittedBox(
                 child: Text(
-                  "-",
+                  '-',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -87,7 +87,7 @@ class CounterKeyboard extends StatelessWidget
               },
               child: FittedBox(
                 child: Text(
-                  "+",
+                  '+',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -105,40 +105,40 @@ class CounterKeyboard extends StatelessWidget
 class NumericKeyboard extends StatelessWidget
     with KeyboardCustomPanelMixin<String>
     implements PreferredSizeWidget {
-  final ValueNotifier<String> notifier;
-  final FocusNode focusNode;
-
   NumericKeyboard({
     Key key,
     this.notifier,
     this.focusNode,
   }) : super(key: key);
 
+  final ValueNotifier<String> notifier;
+  final FocusNode focusNode;
+
   @override
   Size get preferredSize => Size.fromHeight(280);
 
-  final format = NumberFormat("0000");
+  final format = NumberFormat('0000');
 
   String _formatValue(String value) {
     final updatedValue = format.format(double.parse(value));
     final finalValue = updatedValue.substring(0, updatedValue.length - 2) +
-        "." +
+        '.' +
         updatedValue.substring(updatedValue.length - 2, updatedValue.length);
     return finalValue;
   }
 
   void _onTapNumber(String value) {
-    if (value == "Done") {
+    if (value == 'Done') {
       focusNode.unfocus();
       return;
     }
-    final currentValue = notifier.value.replaceAll(".", "");
+    final currentValue = notifier.value.replaceAll('.', '');
     final temp = currentValue + value;
     updateValue(_formatValue(temp));
   }
 
   void _onTapBackspace() {
-    final currentValue = notifier.value.replaceAll(".", "");
+    final currentValue = notifier.value.replaceAll('.', '');
     final temp = currentValue.substring(0, currentValue.length - 1);
     updateValue(_formatValue(temp));
   }
@@ -159,18 +159,18 @@ class NumericKeyboard extends StatelessWidget
             mainAxisSpacing: 10,
           ),
           children: [
-            _buildButton(text: "7"),
-            _buildButton(text: "8"),
-            _buildButton(text: "9"),
-            _buildButton(text: "4"),
-            _buildButton(text: "5"),
-            _buildButton(text: "6"),
-            _buildButton(text: "1"),
-            _buildButton(text: "2"),
-            _buildButton(text: "3"),
+            _buildButton(text: '7'),
+            _buildButton(text: '8'),
+            _buildButton(text: '9'),
+            _buildButton(text: '4'),
+            _buildButton(text: '5'),
+            _buildButton(text: '6'),
+            _buildButton(text: '1'),
+            _buildButton(text: '2'),
+            _buildButton(text: '3'),
             _buildButton(icon: Icons.backspace, color: Colors.black),
-            _buildButton(text: "0"),
-            _buildButton(text: "Done", color: Colors.black),
+            _buildButton(text: '0'),
+            _buildButton(text: 'Done', color: Colors.black),
           ],
         ),
       ),
@@ -191,11 +191,6 @@ class NumericKeyboard extends StatelessWidget
 }
 
 class NumericButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onTap;
-  final IconData icon;
-  final Color color;
-
   const NumericButton({
     Key key,
     this.text,
@@ -203,6 +198,11 @@ class NumericButton extends StatelessWidget {
     this.icon,
     this.color,
   }) : super(key: key);
+
+  final String text;
+  final VoidCallback onTap;
+  final IconData icon;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {

@@ -17,7 +17,7 @@ class Sample extends StatelessWidget {
         },
       ),
       appBar: AppBar(
-        title: Text("KeyboardActions"),
+        title: Text('KeyboardActions'),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
@@ -52,14 +52,14 @@ class Sample extends StatelessWidget {
                   TextField(
                     focusNode: _focusNodeName,
                     decoration: InputDecoration(
-                      labelText: "Product Name",
+                      labelText: 'Product Name',
                     ),
                   ),
                   TextField(
                     focusNode: _focusNodeQuantity,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      labelText: "Quantity",
+                      labelText: 'Quantity',
                     ),
                   ),
                 ],
