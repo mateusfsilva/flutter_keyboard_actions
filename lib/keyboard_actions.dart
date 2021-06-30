@@ -596,9 +596,9 @@ class KeyboardActionstate extends State<KeyboardActions>
                           vertical: 8.0,
                           horizontal: 12.0,
                         ),
-                        child: const Text(
-                          'Done',
-                          style: TextStyle(
+                        child: Text(
+                          _currentAction!.doneButtonLabel,
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.w500,
                           ),

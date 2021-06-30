@@ -17,6 +17,7 @@ class KeyboardActionsItem {
     this.displayArrows = true,
     this.displayDoneButton = true,
     this.footerBuilder,
+    this.doneButtonLabel = 'Done',
     this.logAnalytics = false,
     this.analyticsEvent,
     this.analyticsParameters,
@@ -68,8 +69,19 @@ class KeyboardActionsItem {
   /// This widget must be a PreferredSizeWidget to report its exact height; use
   /// [Size.fromHeight]
   final PreferredSizeWidget Function(BuildContext context)? footerBuilder;
+
+  ///
+  final String doneButtonLabel;
+
+  ///
   final bool? logAnalytics;
+
+  ///
   final String? analyticsEvent;
+
+  ///
   final Map<String, dynamic>? analyticsParameters;
+
+  ///
   final Tracker? analytics;
 }
