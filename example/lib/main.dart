@@ -1,9 +1,10 @@
 import 'package:example/content.dart';
 import 'package:flutter/material.dart';
-import 'package:keyboard_actions/keyboard_actions.dart';
+import 'sample.dart';
+import 'sample2.dart';
 
 // Application entry-point
-void main() => runApp(MyApp()); // Toggle this to test in a dialog
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key key}) : super(key: key);
@@ -23,33 +24,53 @@ class MyApp extends StatelessWidget {
         backgroundColor: Colors.amber,
         body: Builder(
           builder: (myContext) => Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      RaisedButton(
-                        child: Text("Full Screen form"),
-                        onPressed: () => _openWidget(
-                              myContext,
-                              ScaffoldTest(),
-                            ),
-                      ),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      RaisedButton(
-                        child: Text("Dialog form"),
-                        onPressed: () => _openWidget(
-                              myContext,
-                              DialogTest(),
-                            ),
-                      )
-                    ],
+            child: Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton(
+                    child: Text("Full Screen form"),
+                    onPressed: () => _openWidget(
+                      myContext,
+                      ScaffoldTest(),
+                    ),
                   ),
-                ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  ElevatedButton(
+                    child: Text("Dialog form"),
+                    onPressed: () => _openWidget(
+                      myContext,
+                      DialogTest(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  ElevatedButton(
+                    child: Text("Custom Sample 1"),
+                    onPressed: () => _openWidget(
+                      myContext,
+                      Sample(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  ElevatedButton(
+                    child: Text("Custom Sample 2"),
+                    onPressed: () => _openWidget(
+                      myContext,
+                      Sample2(),
+                    ),
+                  )
+                ],
               ),
+            ),
+          ),
         ),
       ),
     );
@@ -61,13 +82,10 @@ class ScaffoldTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text("Keyboard Actions Sample"),
       ),
-      body: FormKeyboardActions(
-        child: Content(),
-      ),
+      body: Content(),
     );
   }
 }
@@ -77,30 +95,33 @@ class DialogTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: Text("Keyboard Actions Sample"),
+      appBar: AppBar(
+        title: Text("Keyboard Actions Sample"),
+      ),
+      body: Center(
+        child: TextButton(
+          child: Text('Launch dialog'),
+          onPressed: () => _launchInDialog(context),
         ),
-        body: Builder(builder: (context) {
-          return Center(
-            child: FlatButton(
-              color: Colors.blue,
-              child: Text('Launch dialog'),
-              onPressed: () => _launchInDialog(context),
-            ),
-          );
-        }));
+      ),
+    );
   }
 
-  _launchInDialog(BuildContext context) {
-    showDialog(
+  void _launchInDialog(BuildContext context) async {
+    final height = MediaQuery.of(context).size.height / 3;
+    await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text('Dialog test'),
-          content: FormKeyboardActions(autoScroll: true, child: Content()),
+          content: SizedBox(
+            height: height,
+            child: Content(
+              isDialog: true,
+            ),
+          ),
           actions: [
-            FlatButton(
+            TextButton(
               child: Text('Ok'),
               onPressed: () {
                 Navigator.of(context).pop();
