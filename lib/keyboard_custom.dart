@@ -41,12 +41,14 @@ class _KeyboardCustomInputState<T> extends State<KeyboardCustomInput<T>>
   @override
   void initState() {
     super.initState();
+
     _hasFocus = widget.focusNode.hasFocus;
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return Focus(
       focusNode: widget.focusNode,
       onFocusChange: (newValue) => setState(() {

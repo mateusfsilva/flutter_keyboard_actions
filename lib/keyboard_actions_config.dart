@@ -14,7 +14,7 @@ class KeyboardActionsConfig {
   });
 
   /// Keyboard Action for specific platform
-  /// KeyboardActionsPlatform : ANDROID , IOS , ALL
+  /// KeyboardActionsPlatform : android , iOS , all
   final KeyboardActionsPlatform keyboardActionsPlatform;
 
   /// true to display arrows prev/next to move focus between inputs

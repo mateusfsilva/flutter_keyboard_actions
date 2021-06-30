@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 /// Helps [child] stay visible by resizing it to avoid the given [areaToAvoid].
 ///
@@ -78,14 +77,17 @@ class BottomAreaAvoiderState extends State<BottomAreaAvoider> {
 
   @override
   void didUpdateWidget(BottomAreaAvoider oldWidget) {
-    _previousAreaToAvoid = oldWidget.areaToAvoid;
     super.didUpdateWidget(oldWidget);
+
+    _previousAreaToAvoid = oldWidget.areaToAvoid;
   }
 
   @override
   void dispose() {
-    _animationKey.currentState?.animation
-        .removeStatusListener(_animationListener!);
+    _animationKey.currentState?.animation.removeStatusListener(
+      _animationListener!,
+    );
+
     super.dispose();
   }
 
@@ -105,8 +107,11 @@ class BottomAreaAvoiderState extends State<BottomAreaAvoider> {
     // and embed the [child] directly in an [AnimatedContainer].
     if (widget.child is ScrollView) {
       final scrollView = widget.child! as ScrollView;
-      _scrollController =
-          scrollView.controller ?? PrimaryScrollController.of(context);
+      _scrollController = scrollView.controller ??
+          PrimaryScrollController.of(
+            context,
+          );
+
       return _buildAnimatedContainer(widget.child);
     }
     // If [child] is not a [ScrollView], and [autoScroll] is true,
@@ -114,37 +119,35 @@ class BottomAreaAvoiderState extends State<BottomAreaAvoider> {
     // it possible to scroll to the focused widget.
     if (widget.autoScroll) {
       _scrollController = ScrollController();
+
       return _buildAnimatedContainer(
         LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              physics: widget.physics,
-              controller: _scrollController,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
-                child: widget.child,
+          builder: (context, constraints) => SingleChildScrollView(
+            physics: widget.physics,
+            controller: _scrollController,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
               ),
-            );
-          },
+              child: widget.child,
+            ),
+          ),
         ),
       );
     }
+
     // Just embed the [child] directly in an [AnimatedContainer].
     return _buildAnimatedContainer(widget.child);
   }
 
-  Widget _buildAnimatedContainer(Widget? child) {
-    return AnimatedContainer(
-      key: _animationKey,
-      color: Colors.transparent,
-      padding: EdgeInsets.only(bottom: widget.areaToAvoid),
-      duration: widget.duration,
-      curve: widget.curve,
-      child: child,
-    );
-  }
+  Widget _buildAnimatedContainer(Widget? child) => AnimatedContainer(
+        key: _animationKey,
+        color: Colors.transparent,
+        padding: EdgeInsets.only(bottom: widget.areaToAvoid),
+        duration: widget.duration,
+        curve: widget.curve,
+        child: child,
+      );
 
   /// Called whenever the status of our padding animation changes.
   ///
@@ -154,26 +157,31 @@ class BottomAreaAvoiderState extends State<BottomAreaAvoider> {
     if (status != AnimationStatus.completed) {
       return; // Only check when the animation is finishing
     }
+
     if (!widget.autoScroll) {
       return; // auto scroll is not enabled, do nothing
     }
+
     if (widget.areaToAvoid <= _previousAreaToAvoid) {
       // decreased-- do nothing. We only scroll when area to avoid is added
       // (keyboard shown).
       return;
     }
+
     // Need to wait a frame to get the new size (todo: is this still needed?
     // we dont use mediaquery anymore)
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (!mounted) {
         return; // context is no longer valid
       }
+
       scrollToOverscroll();
     });
   }
 
   void scrollToOverscroll() {
     final focused = findFocusedObject(context.findRenderObject());
+
     if (focused == null) {
       return;
     }
@@ -195,18 +203,23 @@ class BottomAreaAvoiderState extends State<BottomAreaAvoider> {
 RenderObject? findFocusedObject(RenderObject? root) {
   final q = Queue<RenderObject?>();
   q.add(root);
+
   while (q.isNotEmpty) {
     final node = q.removeFirst()!;
     final config = SemanticsConfiguration();
+
     //ignore: invalid_use_of_protected_member
     node.describeSemanticsConfiguration(config);
+
     if (config.isFocused) {
       return node;
     }
+
     node.visitChildrenForSemantics((child) {
       q.add(child);
     });
   }
+
   return null;
 }
 

@@ -108,35 +108,38 @@ class KeyboardActionstate extends State<KeyboardActions>
 
   @override
   void initState() {
+    super.initState();
+
     WidgetsBinding.instance!.addObserver(this);
 
     if (widget.enable) {
       setConfig(widget.config);
+
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         _onLayout();
         _updateOffset();
       });
     }
-
-    super.initState();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
     if (defaultTargetPlatform == TargetPlatform.android) {
       if (state == AppLifecycleState.paused) {
-        FocusScope.of(context).requestFocus(FocusNode());
+        FocusScope.of(context).unfocus();
+
         _focusChanged(false);
       }
     }
-
-    super.didChangeAppLifecycleState(state);
   }
 
   @override
   void didChangeMetrics() {
     if (PlatformCheck.isAndroid) {
       final value = WidgetsBinding.instance!.window.viewInsets.bottom;
+
       if (value > 0) {
         _onKeyboardChanged(true);
         isKeyboardOpen = true;
@@ -145,6 +148,7 @@ class KeyboardActionstate extends State<KeyboardActions>
         isKeyboardOpen = false;
       }
     }
+
     // Need to wait a frame to get the new size
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _updateOffset();
@@ -153,56 +157,54 @@ class KeyboardActionstate extends State<KeyboardActions>
 
   @override
   void didUpdateWidget(KeyboardActions oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
     if (widget.enable) {
       setConfig(widget.config);
     }
-
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
-  Widget build(BuildContext context) {
-    // Return the given child wrapped in a [KeyboardAvoider].
-    // We will call [_buildBar] and insert it via overlay on demand.
-    // Add [_kBarSize] padding to ensure we scroll past the action bar.
+  Widget build(BuildContext context) =>
+      // Return the given child wrapped in a [KeyboardAvoider].
+      // We will call [_buildBar] and insert it via overlay on demand.
+      // Add [_kBarSize] padding to ensure we scroll past the action bar.
 
-    // We need to add this sized box to support embedding in IntrinsicWidth
-    // areas, like AlertDialog. This is because of the LayoutBuilder
-    //KeyboardAvoider uses if it has no child ScrollView.
-    // If we don't, we get "LayoutBuilder does not support returning intrinsic
-    // dimensions".
-    // See https:// github.com/flutter/flutter/issues/18108.
-    // The SizedBox can be removed when thats fixed.
-    return widget.enable && !widget.disableScroll
-        ? Material(
-            color: Colors.transparent,
-            child: SizedBox(
-              width: double.maxFinite,
-              key: _keyParent,
-              child: BottomAreaAvoider(
-                key: bottomAreaAvoiderKey,
-                areaToAvoid: _offset,
-                overscroll: widget.overscroll,
-                duration: Duration(
-                  milliseconds: (_timeToDismiss.inMilliseconds * 1.8).toInt(),
+      // We need to add this sized box to support embedding in IntrinsicWidth
+      // areas, like AlertDialog. This is because of the LayoutBuilder
+      //KeyboardAvoider uses if it has no child ScrollView.
+      // If we don't, we get "LayoutBuilder does not support returning intrinsic
+      // dimensions".
+      // See https:// github.com/flutter/flutter/issues/18108.
+      // The SizedBox can be removed when thats fixed.
+      widget.enable && !widget.disableScroll
+          ? Material(
+              color: Colors.transparent,
+              child: SizedBox(
+                width: double.maxFinite,
+                key: _keyParent,
+                child: BottomAreaAvoider(
+                  key: bottomAreaAvoiderKey,
+                  areaToAvoid: _offset,
+                  overscroll: widget.overscroll,
+                  duration: Duration(
+                    milliseconds: (_timeToDismiss.inMilliseconds * 1.8).toInt(),
+                  ),
+                  autoScroll: widget.autoScroll,
+                  physics: widget.bottomAvoiderScrollPhysics,
+                  child: widget.child,
                 ),
-                autoScroll: widget.autoScroll,
-                physics: widget.bottomAvoiderScrollPhysics,
-                child: widget.child,
               ),
-            ),
-          )
-        : widget.child;
-  }
+            )
+          : widget.child;
 
   /// If the keyboard bar is on for the current platform
-  bool get _isAvailable {
-    return config!.keyboardActionsPlatform == KeyboardActionsPlatform.all ||
-        (config!.keyboardActionsPlatform == KeyboardActionsPlatform.iOS &&
-            PlatformCheck.isIOS) ||
-        (config!.keyboardActionsPlatform == KeyboardActionsPlatform.android &&
-            PlatformCheck.isAndroid);
-  }
+  bool get _isAvailable =>
+      config!.keyboardActionsPlatform == KeyboardActionsPlatform.all ||
+      (config!.keyboardActionsPlatform == KeyboardActionsPlatform.iOS &&
+          PlatformCheck.isIOS) ||
+      (config!.keyboardActionsPlatform == KeyboardActionsPlatform.android &&
+          PlatformCheck.isAndroid);
 
   /// If we are currently showing the keyboard bar
   bool get _isShowing {
@@ -212,22 +214,27 @@ class KeyboardActionstate extends State<KeyboardActions>
   /// The current previous index, or null.
   int? get _previousIndex {
     final nextIndex = _currentIndex! - 1;
+
     return nextIndex >= 0 ? nextIndex : null;
   }
 
   /// The current next index, or null.
   int? get _nextIndex {
     final nextIndex = _currentIndex! + 1;
+
     return nextIndex < _map.length ? nextIndex : null;
   }
 
   /// Set the config for the keyboard action bar.
   void setConfig(KeyboardActionsConfig newConfig) {
     clearConfig();
+
     config = newConfig;
+
     for (int i = 0; i < config!.actions!.length; i++) {
       _addAction(i, config!.actions![i]);
     }
+
     _startListeningFocus();
   }
 
@@ -235,6 +242,7 @@ class KeyboardActionstate extends State<KeyboardActions>
   void clearConfig() {
     _dismissListeningFocus();
     _clearAllFocusNode();
+
     config = null;
   }
 
@@ -255,6 +263,7 @@ class KeyboardActionstate extends State<KeyboardActions>
 
     for (final key in _map.keys) {
       final currentAction = _map[key]!;
+
       if (currentAction.focusNode.hasFocus) {
         hasFocusFound = true;
         _currentAction = currentAction;
@@ -305,6 +314,7 @@ class KeyboardActionstate extends State<KeyboardActions>
   void _onTapUp() {
     if (_previousIndex != null) {
       final currentAction = _map[_previousIndex!]!;
+
       if (currentAction.enabled) {
         _shouldGoToNextFocus(currentAction, _previousIndex);
       } else {
@@ -317,6 +327,7 @@ class KeyboardActionstate extends State<KeyboardActions>
   void _onTapDown() {
     if (_nextIndex != null) {
       final currentAction = _map[_nextIndex!]!;
+
       if (currentAction.enabled) {
         _shouldGoToNextFocus(currentAction, _nextIndex);
       } else {
@@ -343,6 +354,7 @@ class KeyboardActionstate extends State<KeyboardActions>
         }
         _overlayEntry!.markNeedsBuild();
       }
+
       if (_currentAction != null && _currentAction!.footerBuilder != null) {
         WidgetsBinding.instance!.addPostFrameCallback((_) {
           _updateOffset();
@@ -436,6 +448,7 @@ class KeyboardActionstate extends State<KeyboardActions>
         await Future.delayed(_timeToDismiss);
       }
     }
+
     _overlayEntry?.remove();
     _overlayEntry = null;
     _currentFooter = null;
@@ -507,98 +520,96 @@ class KeyboardActionstate extends State<KeyboardActions>
   }
 
   /// Build the keyboard action bar based on the current [config].
-  Widget _buildBar(bool displayArrows) {
-    return AnimatedCrossFade(
-      duration: _timeToDismiss,
-      crossFadeState:
-          _isShowing ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-      firstChild: Container(
-        height: _kBarSize,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: widget.config.keyboardSeparatorColor,
+  Widget _buildBar(bool displayArrows) => AnimatedCrossFade(
+        duration: _timeToDismiss,
+        crossFadeState:
+            _isShowing ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+        firstChild: Container(
+          height: _kBarSize,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: widget.config.keyboardSeparatorColor,
+              ),
             ),
           ),
-        ),
-        child: SafeArea(
-          top: false,
-          bottom: false,
-          child: Row(
-            children: [
-              if (config!.nextFocus && displayArrows)
-                IconButton(
-                  icon: const Icon(Icons.keyboard_arrow_up),
-                  tooltip: 'Previous',
-                  iconSize: IconTheme.of(context).size!,
-                  color: IconTheme.of(context).color,
-                  disabledColor: Theme.of(context).disabledColor,
-                  onPressed: _previousIndex != null ? _onTapUp : null,
-                )
-              else
-                const SizedBox.shrink(),
-              if (config!.nextFocus && displayArrows)
-                IconButton(
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  tooltip: 'Next',
-                  iconSize: IconTheme.of(context).size!,
-                  color: IconTheme.of(context).color,
-                  disabledColor: Theme.of(context).disabledColor,
-                  onPressed: _nextIndex != null ? _onTapDown : null,
-                )
-              else
-                const SizedBox.shrink(),
-              const Spacer(),
-              if (_currentAction?.displayDoneButton != null &&
-                  _currentAction!.displayDoneButton &&
-                  (_currentAction!.toolbarButtons == null ||
-                      _currentAction!.toolbarButtons!.isEmpty))
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: InkWell(
-                    onTap: () {
-                      if (_currentAction?.onTapAction != null) {
-                        if (_currentAction!.logAnalytics!) {
-                          _currentAction!.analytics!.logEvent(
-                            AnalyticsEvent(
-                              eventName: _currentAction!.analyticsEvent!,
-                              parameters: _currentAction!.analyticsParameters,
-                            ),
-                          );
+          child: SafeArea(
+            top: false,
+            bottom: false,
+            child: Row(
+              children: [
+                if (config!.nextFocus && displayArrows)
+                  IconButton(
+                    icon: const Icon(Icons.keyboard_arrow_up),
+                    tooltip: 'Previous',
+                    iconSize: IconTheme.of(context).size!,
+                    color: IconTheme.of(context).color,
+                    disabledColor: Theme.of(context).disabledColor,
+                    onPressed: _previousIndex != null ? _onTapUp : null,
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (config!.nextFocus && displayArrows)
+                  IconButton(
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    tooltip: 'Next',
+                    iconSize: IconTheme.of(context).size!,
+                    color: IconTheme.of(context).color,
+                    disabledColor: Theme.of(context).disabledColor,
+                    onPressed: _nextIndex != null ? _onTapDown : null,
+                  )
+                else
+                  const SizedBox.shrink(),
+                const Spacer(),
+                if (_currentAction?.displayDoneButton != null &&
+                    _currentAction!.displayDoneButton &&
+                    (_currentAction!.toolbarButtons == null ||
+                        _currentAction!.toolbarButtons!.isEmpty))
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: InkWell(
+                      onTap: () {
+                        if (_currentAction?.onTapAction != null) {
+                          if (_currentAction!.logAnalytics!) {
+                            _currentAction!.analytics!.logEvent(
+                              AnalyticsEvent(
+                                eventName: _currentAction!.analyticsEvent!,
+                                parameters: _currentAction!.analyticsParameters,
+                              ),
+                            );
+                          }
+
+                          _currentAction!.onTapAction!();
                         }
 
-                        _currentAction!.onTapAction!();
-                      }
-
-                      _clearFocus();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 12.0,
-                      ),
-                      child: const Text(
-                        'Done',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w500,
+                        _clearFocus();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                          horizontal: 12.0,
+                        ),
+                        child: const Text(
+                          'Done',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              if (_currentAction?.toolbarButtons != null)
-                ..._currentAction!.toolbarButtons!
-                    .map((item) => item(_currentAction!.focusNode))
-                    .toList()
-            ],
+                if (_currentAction?.toolbarButtons != null)
+                  ..._currentAction!.toolbarButtons!
+                      .map((item) => item(_currentAction!.focusNode))
+                      .toList()
+              ],
+            ),
           ),
         ),
-      ),
-      secondChild: const SizedBox.shrink(),
-    );
-  }
+        secondChild: const SizedBox.shrink(),
+      );
 
   final GlobalKey<BottomAreaAvoiderState> bottomAreaAvoiderKey =
       GlobalKey<BottomAreaAvoiderState>();
