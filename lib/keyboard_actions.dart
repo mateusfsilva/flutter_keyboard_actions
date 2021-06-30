@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -106,6 +108,9 @@ class KeyboardActionstate extends State<KeyboardActions>
   bool _dismissAnimationNeeded = true;
   final _keyParent = GlobalKey();
 
+  final GlobalKey<BottomAreaAvoiderState> bottomAreaAvoiderKey =
+      GlobalKey<BottomAreaAvoiderState>();
+
   @override
   void initState() {
     super.initState();
@@ -114,45 +119,11 @@ class KeyboardActionstate extends State<KeyboardActions>
 
     if (widget.enable) {
       setConfig(widget.config);
-
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         _onLayout();
         _updateOffset();
       });
     }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      if (state == AppLifecycleState.paused) {
-        FocusScope.of(context).unfocus();
-
-        _focusChanged(false);
-      }
-    }
-  }
-
-  @override
-  void didChangeMetrics() {
-    if (PlatformCheck.isAndroid) {
-      final value = WidgetsBinding.instance!.window.viewInsets.bottom;
-
-      if (value > 0) {
-        _onKeyboardChanged(true);
-        isKeyboardOpen = true;
-      } else {
-        _onKeyboardChanged(false);
-        isKeyboardOpen = false;
-      }
-    }
-
-    // Need to wait a frame to get the new size
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _updateOffset();
-    });
   }
 
   @override
@@ -165,16 +136,51 @@ class KeyboardActionstate extends State<KeyboardActions>
   }
 
   @override
+  void didChangeMetrics() {
+    if (PlatformCheck.isAndroid) {
+      final value = WidgetsBinding.instance!.window.viewInsets.bottom;
+
+      if (value > 0) {
+        _onKeyboardChanged(true);
+
+        isKeyboardOpen = true;
+      } else {
+        _onKeyboardChanged(false);
+
+        isKeyboardOpen = false;
+      }
+    }
+
+    // Need to wait a frame to get the new size
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _updateOffset();
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      if (state == AppLifecycleState.paused) {
+        FocusScope.of(context).requestFocus(FocusNode());
+
+        _focusChanged(false);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) =>
       // Return the given child wrapped in a [KeyboardAvoider].
       // We will call [_buildBar] and insert it via overlay on demand.
       // Add [_kBarSize] padding to ensure we scroll past the action bar.
 
       // We need to add this sized box to support embedding in IntrinsicWidth
-      // areas, like AlertDialog. This is because of the LayoutBuilder
+      //areas, like AlertDialog. This is because of the LayoutBuilder
       //KeyboardAvoider uses if it has no child ScrollView.
-      // If we don't, we get "LayoutBuilder does not support returning intrinsic
-      // dimensions".
+      // If we don't, we get "LayoutBuilder does not support returning
+      //intrinsic dimensions".
       // See https:// github.com/flutter/flutter/issues/18108.
       // The SizedBox can be removed when thats fixed.
       widget.enable && !widget.disableScroll
@@ -188,8 +194,8 @@ class KeyboardActionstate extends State<KeyboardActions>
                   areaToAvoid: _offset,
                   overscroll: widget.overscroll,
                   duration: Duration(
-                    milliseconds: (_timeToDismiss.inMilliseconds * 1.8).toInt(),
-                  ),
+                      milliseconds:
+                          (_timeToDismiss.inMilliseconds * 1.8).toInt()),
                   autoScroll: widget.autoScroll,
                   physics: widget.bottomAvoiderScrollPhysics,
                   child: widget.child,
@@ -207,9 +213,7 @@ class KeyboardActionstate extends State<KeyboardActions>
           PlatformCheck.isAndroid);
 
   /// If we are currently showing the keyboard bar
-  bool get _isShowing {
-    return _overlayEntry != null;
-  }
+  bool get _isShowing => _overlayEntry != null;
 
   /// The current previous index, or null.
   int? get _previousIndex {
@@ -261,7 +265,7 @@ class KeyboardActionstate extends State<KeyboardActions>
   Future<void> _focusNodeListener() async {
     bool hasFocusFound = false;
 
-    for (final key in _map.keys) {
+    _map.keys.forEach((key) {
       final currentAction = _map[key]!;
 
       if (currentAction.focusNode.hasFocus) {
@@ -271,7 +275,7 @@ class KeyboardActionstate extends State<KeyboardActions>
 
         return;
       }
-    }
+    });
 
     _focusChanged(hasFocusFound);
   }
@@ -299,7 +303,7 @@ class KeyboardActionstate extends State<KeyboardActions>
     }
 
     // if it is a custom keyboard then wait until the focus was dismissed from
-    // the others
+    //the others
     if (_currentAction!.footerBuilder != null) {
       await Future.delayed(
         Duration(milliseconds: _timeToDismiss.inMilliseconds),
@@ -352,6 +356,7 @@ class KeyboardActionstate extends State<KeyboardActions>
         if (PlatformCheck.isAndroid) {
           _updateOffset();
         }
+
         _overlayEntry!.markNeedsBuild();
       }
 
@@ -364,15 +369,15 @@ class KeyboardActionstate extends State<KeyboardActions>
   }
 
   void _startListeningFocus() {
-    for (final action in _map.values) {
-      action.focusNode.addListener(_focusNodeListener);
-    }
+    _map.values.forEach(
+      (action) => action.focusNode.addListener(_focusNodeListener),
+    );
   }
 
   void _dismissListeningFocus() {
-    for (final action in _map.values) {
-      action.focusNode.removeListener(_focusNodeListener);
-    }
+    _map.values.forEach(
+      (action) => action.focusNode.removeListener(_focusNodeListener),
+    );
   }
 
   bool _inserted = false;
@@ -388,6 +393,7 @@ class KeyboardActionstate extends State<KeyboardActions>
     final OverlayState os = Overlay.of(context)!;
 
     _inserted = true;
+
     _overlayEntry = OverlayEntry(builder: (context) {
       // Update and build footer, if any
       _currentFooter = (_currentAction!.footerBuilder != null)
@@ -570,7 +576,7 @@ class KeyboardActionstate extends State<KeyboardActions>
                     padding: const EdgeInsets.all(5.0),
                     child: InkWell(
                       onTap: () {
-                        if (_currentAction?.onTapAction != null) {
+                        if (_currentAction!.onTapAction != null) {
                           if (_currentAction!.logAnalytics!) {
                             _currentAction!.analytics!.logEvent(
                               AnalyticsEvent(
@@ -611,12 +617,10 @@ class KeyboardActionstate extends State<KeyboardActions>
         secondChild: const SizedBox.shrink(),
       );
 
-  final GlobalKey<BottomAreaAvoiderState> bottomAreaAvoiderKey =
-      GlobalKey<BottomAreaAvoiderState>();
-
   @override
   void dispose() {
     clearConfig();
+
     _removeOverlay(fromDispose: true);
 
     WidgetsBinding.instance!.removeObserver(this);
