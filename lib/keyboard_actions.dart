@@ -2,12 +2,12 @@
 
 import 'dart:async';
 
+import 'package:bloc_analytics/bloc_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'external/keyboard_avoider/bottom_area_avoider.dart';
 import 'external/platform_check/platform_check.dart';
-import 'external/tracker/tracker.dart';
 import 'keyboard_actions_config.dart';
 import 'keyboard_actions_item.dart';
 

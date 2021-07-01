@@ -11,6 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
 
+  bloc_analytics:
+    git:
+      url: https://github.com/mateusfsilva/flutter_bloc_analytics.git
+      ref: 87988be994dcc880919e63dc03cd4fc0222dffb3
+      path: packages/bloc_analytics
+
 dev_dependencies:
   lint: ^1.5.3
 

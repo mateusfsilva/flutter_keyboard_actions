@@ -1,6 +1,5 @@
+import 'package:bloc_analytics/bloc_analytics.dart';
 import 'package:flutter/material.dart';
-
-import 'external/tracker/tracker.dart';
 
 typedef ButtonBuilder = Widget Function(FocusNode focusNode);
 
