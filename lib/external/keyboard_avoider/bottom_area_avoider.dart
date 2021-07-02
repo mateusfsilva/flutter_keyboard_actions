@@ -114,6 +114,19 @@ class BottomAreaAvoiderState extends State<BottomAreaAvoider> {
 
       return _buildAnimatedContainer(widget.child);
     }
+
+    // If [child] is a [CustomScrollView], get its [ScrollController]
+    // and embed the [child] directly in an [AnimatedContainer].
+    if (widget.child is CustomScrollView) {
+      final scrollView = widget.child! as CustomScrollView;
+      _scrollController = scrollView.controller ??
+          PrimaryScrollController.of(
+            context,
+          );
+
+      return _buildAnimatedContainer(widget.child);
+    }
+
     // If [child] is not a [ScrollView], and [autoScroll] is true,
     // embed the [child] in a [SingleChildScrollView] to make
     // it possible to scroll to the focused widget.

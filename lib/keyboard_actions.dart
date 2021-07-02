@@ -181,7 +181,7 @@ class KeyboardActionstate extends State<KeyboardActions>
       //KeyboardAvoider uses if it has no child ScrollView.
       // If we don't, we get "LayoutBuilder does not support returning
       //intrinsic dimensions".
-      // See https:// github.com/flutter/flutter/issues/18108.
+      // See https://github.com/flutter/flutter/issues/18108.
       // The SizedBox can be removed when thats fixed.
       widget.enable && !widget.disableScroll
           ? Material(
